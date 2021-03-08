@@ -1,0 +1,41 @@
+.decoded-table {
+
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  overflow-x: auto;
+
+  thead {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    width: 100%;
+
+    border: 1px solid lightgrey;
+    border-radius: 0.5rem;
+  }
+
+  &--field,
+  &--value {
+    margin: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  &--field {
+  }
+
+  &--value {
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  tbody {
+    border: 1px solid lightgrey;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+  }
+
+  th,
+  td {
+    padding: 0.5rem;
+  }
+}

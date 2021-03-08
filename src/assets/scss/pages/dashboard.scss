@@ -1,0 +1,23 @@
+.dashboard {
+  @extend .row;
+
+  .raw-tx-decoder {
+    @extend .col-lg-7;
+    @extend .col-sm-12;
+  }
+
+  .converter {
+    @extend .col-lg-5;
+    @extend .col-sm-12;
+  }
+
+  @media screen and (min-width: $md-width) {
+    .converter {
+      padding-left: 0;
+    }
+
+    .raw-tx-decoder {
+      padding-right: 0;
+    }
+  }
+}

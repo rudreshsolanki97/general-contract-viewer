@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { Switch, Route } from "react-router-dom";
+import _ from "lodash";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Header from "./components/Header";
+import Dashboard from "./components/Dashboard";
+
+import "./assets/scss/main.scss";
+import {
+  GetCurrentProvider,
+  Connect,
+  SubmitContractTx,
+} from "./wallets/metamask";
+
+class App extends Component {
+  componentDidMount() {
+    const provider = GetCurrentProvider();
+    if (!_.isEqual("metamask", provider)) {
+      alert("please install / login into metamask");
+    } else {
+      Connect();
+      // SubmitContractTx();
+    }
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <Header />
+
+        <Switch>
+          <Route path="/">
+            <Dashboard />
+          </Route>
+        </Switch>
+      </div>
+    );
+  }
 }
-
 export default App;

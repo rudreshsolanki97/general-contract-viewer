@@ -1,0 +1,14 @@
+.qr-code-modal {
+  display: flex;
+  justify-content: center;
+
+  p {
+    word-break: break-word;
+  }
+
+  .modal-footer {
+    button {
+      margin-left: 1rem;
+    }
+  }
+}
