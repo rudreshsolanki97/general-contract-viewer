@@ -63,7 +63,7 @@ export function GetCurrentProvider() {
   return "unknown";
 }
 
-export async function SubmitContractTx(method, ...params) {
+export async function SubmitContractTx(method, stateMutability, ...params) {
   const boardRoomAddress = "0x8ad9662F33EA75e6AbB581DE62EEC52b43436C64";
   const abi = BoardroomAbi;
 
@@ -71,9 +71,17 @@ export async function SubmitContractTx(method, ...params) {
 
   const contract = new web3.eth.Contract(abi, boardRoomAddress);
 
-  const resp = await contract.methods[method](...params).call({
-    from: addresses[0],
-  });
+  if (stateMutability === "view") {
+    const resp = await contract.methods[method](...params).call({
+      from: addresses[0],
+    });
 
-  return resp;
+    return resp;
+  } else {
+    const resp = await contract.methods[method](...params).send({
+      from: addresses[0],
+    });
+
+    return resp;
+  }
 }

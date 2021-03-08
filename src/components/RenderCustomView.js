@@ -146,13 +146,15 @@ export const DynamicForm = (props) => {
       <Button
         onClick={() => {
           setLoading(true);
-          SubmitContractTx(props.method, ...inputs)
+          SubmitContractTx(props.method, props.stateMutability, ...inputs)
             .then((resp) => {
               if (_.isObject(resp)) resp = JSON.stringify(resp);
+              console.log("error", resp);
               alert(`success ${resp}`);
               setLoading(false);
             })
             .catch((e) => {
+              console.log("error", e);
               alert("Error");
               setLoading(false);
             });
