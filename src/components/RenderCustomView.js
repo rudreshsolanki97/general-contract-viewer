@@ -149,13 +149,45 @@ export const DynamicForm = (props) => {
           SubmitContractTx(props.method, props.stateMutability, ...inputs)
             .then((resp) => {
               if (_.isObject(resp)) resp = JSON.stringify(resp);
-              console.log("error", resp);
-              alert(`success ${resp}`);
+
+              if (resp && resp.transactionHash) {
+                const content = (
+                  <Container>
+                    <Row>
+                      <Col lg={4} md={4} sm={4}>
+                        <span>Transaction Hash</span>
+                      </Col>
+                      <Col lg={8} md={8} sm={8}>
+                        <span>{resp.transactionHash}</span>
+                      </Col>
+                    </Row>
+                  </Container>
+                );
+                props.setModalContent(content);
+              } else if (resp !== null) {
+                const content = (
+                  <Container>
+                    <Row>
+                      <Col lg={4} md={4} sm={4}>
+                        <span>Response</span>
+                      </Col>
+                      <Col lg={8} md={8} sm={8}>
+                        <span>{resp}</span>
+                      </Col>
+                    </Row>
+                  </Container>
+                );
+                props.setModalContent(content);
+              } else {
+                props.setModalContent("error");
+              }
+
               setLoading(false);
             })
             .catch((e) => {
               console.log("error", e);
               alert("Error");
+              props.setModalContent("error");
               setLoading(false);
             });
         }}

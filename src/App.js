@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import _ from "lodash";
+import { connect } from "react-redux";
+
+import * as actions from "./actions/index";
 
 import Header from "./components/Header";
 import Dashboard from "./components/Dashboard";
@@ -18,8 +21,14 @@ class App extends Component {
     if (!_.isEqual("metamask", provider)) {
       alert("please install / login into metamask");
     } else {
-      Connect();
-      // SubmitContractTx();
+      Connect()
+        .then((address) => {
+          this.props.WalletConnected(address[0]);
+        })
+        .catch((e) => {
+          console.log(e);
+          this.props.walletDisconnected();
+        });
     }
   }
 
@@ -37,4 +46,5 @@ class App extends Component {
     );
   }
 }
-export default App;
+
+export default connect(null, actions)(App);

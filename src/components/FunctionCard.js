@@ -2,8 +2,12 @@ import { Card, Container } from "react-bootstrap";
 
 import { DynamicForm } from "./RenderCustomView";
 
-const FunctionCard = ({ title, inputs, stateMutability }) => {
-  
+const FunctionCard = ({
+  title,
+  inputs,
+  stateMutability,
+  setModalContent,
+}) => {
   return (
     <Card className="custom-card-2">
       <Card.Title>
@@ -13,7 +17,12 @@ const FunctionCard = ({ title, inputs, stateMutability }) => {
         </div>
       </Card.Title>
       <Card.Body>
-        <DynamicForm data={inputs} method={title} stateMutability={stateMutability}/>
+        <DynamicForm
+          data={inputs}
+          method={title}
+          stateMutability={stateMutability}
+          setModalContent={setModalContent}
+        />
       </Card.Body>
     </Card>
   );

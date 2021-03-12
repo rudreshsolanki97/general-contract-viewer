@@ -7,11 +7,17 @@ import { SubPath } from "./helpers/constant";
 
 import reportWebVitals from "./reportWebVitals";
 
+import { Provider } from "react-redux";
+
+import store from "./redux/store";
+
 ReactDOM.render(
   <React.StrictMode>
-    <Router basename={SubPath}>
-      <App />
-    </Router>
+    <Provider store={store}>
+      <Router basename={SubPath}>
+        <App />
+      </Router>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );
