@@ -12,3 +12,26 @@
     }
   }
 }
+
+.balance-modal {
+  .modal-header {
+    .modal-title {
+      font-size: 2rem !important;
+      font-weight: 550;
+    }
+  }
+
+  .balance-item {
+    &__name {
+      font-size: large;
+      font-weight: 500;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    &__value {
+      font-size: medium;
+      text-align: center;
+    }
+  }
+}

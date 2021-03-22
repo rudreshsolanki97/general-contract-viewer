@@ -1,0 +1,30 @@
+.page-navigation {
+  .col {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+
+  &__wrapper {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1rem;
+    width: 70%;
+
+    a {
+      text-decoration: none;
+      text-transform: uppercase;
+      padding: 5px;
+      border-radius: 2px;
+      border: 1px solid $color-new-blue;
+      margin-left: 2px;
+      margin-right: 2px;
+
+      &:hover {
+        background-color: $color-new-blue;
+        color: white;
+      }
+    }
+  }
+}

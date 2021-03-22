@@ -6,36 +6,29 @@ import { connect } from "react-redux";
 import * as actions from "./actions/index";
 
 import Header from "./components/Header";
+import PageNavigation from "./components/Navigation";
 import Dashboard from "./components/Dashboard";
 
 import "./assets/scss/main.scss";
-import {
-  GetCurrentProvider,
-  Connect,
-  SubmitContractTx,
-} from "./wallets/metamask";
+import { initWeb3 } from "./wallets/metamask";
 
 class App extends Component {
   componentDidMount() {
-    const provider = GetCurrentProvider();
-    if (!_.isEqual("metamask", provider)) {
-      alert("please install / login into metamask");
-    } else {
-      Connect()
-        .then((address) => {
-          this.props.WalletConnected(address[0]);
-        })
-        .catch((e) => {
-          console.log(e);
-          this.props.walletDisconnected();
-        });
-    }
+    initWeb3();
   }
 
   render() {
+    const links = [
+      { link: "/", name: "home" },
+      { link: "/", name: "boardroom" },
+      { link: "/", name: "bonds" },
+      { link: "/", name: "bank" },
+    ];
+
     return (
       <div className="App">
         <Header />
+        <PageNavigation links={[...links]} />
 
         <Switch>
           <Route path="/">

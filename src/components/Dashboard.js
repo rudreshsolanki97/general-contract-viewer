@@ -5,8 +5,8 @@ import Switch from "react-switch";
 import { connect } from "react-redux";
 
 import { SwitchStyle2 } from "./Switch";
-import FunctionCard from "./FunctionCard";
-import DataCard from "./DataCard";
+import FunctionCard from "./common/FunctionCard";
+import DataCard from "./common/DataCard";
 
 import {
   GetFunctionSignature,
@@ -123,77 +123,32 @@ class Dashboard extends Component {
     ));
   }
 
-  renderCurrentAddressBox() {
-    return (
-      <>
-        <Col lg={12} sm={12} md={12} className="current-address top-row">
-          <div className="current-address--wrapper">
-            <div className="current-address--wrapper__label">
-              Current Address
-            </div>
-            <div className="current-address--wrapper__address">
-              {this.props.wallet.address}
-            </div>
-          </div>
-        </Col>
-        <Col lg={12} sm={12} md={12} className="address-balance top-row">
-          <Row className="address-balance--wrapper">
-            <Col
-              className="address-balance--wrapper__title"
-              lg={12}
-              md={12}
-              sm={12}
-            >
-              Balances
-            </Col>
-            <Col lg={8} md={8} sm={8}>
-              <b>Cash</b>
-            </Col>
-            <Col lg={4} md={4} sm={4}>
-              {this.props.dashboard.cash}
-            </Col>
-            <Col lg={8} md={8} sm={8}>
-              <b>share</b>
-            </Col>
-            <Col lg={4} md={4} sm={4}>
-              {this.props.dashboard.share}
-            </Col>
-            <Col lg={8} md={8} sm={8}>
-              <b>stake</b>
-            </Col>
-            <Col lg={4} md={4} sm={4}>
-              {this.props.dashboard.stake}
-            </Col>
-          </Row>
-        </Col>
-      </>
-    );
-  }
-
   render() {
     return (
       <div className="main-panel dashboard">
         <Container>
-          <Row>{this.renderCurrentAddressBox()}</Row>
+          <Row>
+            <Col lg={12} sm={12} md={12} className="boardroom__banner">
+              BOARDROOM
+            </Col>
+          </Row>
 
           <Row>
-            <Col lg={12} sm={12} md={12} className="epoch">
+            <Col lg={4} sm={4} md={4} className="epoch">
               <DataCard title="Current Epoch">
                 <div className="epoch--count">{this.props.dashboard.epoch}</div>
                 <div className="epoch--timer"></div>
               </DataCard>
             </Col>
-          </Row>
 
-          <Row>
-            <Col lg={6} sm={6} md={6} className="staked-share">
+            <Col lg={4} sm={4} md={4} className="staked-share">
               <DataCard title="Staked Shares">
                 <div className="staked-share--amount">
                   {this.props.dashboard.stake}
                 </div>
               </DataCard>
             </Col>
-            <Col lg={6} sm={6} md={6} className="staked-share-usd">
+            <Col lg={4} sm={4} md={4} className="staked-share-usd">
               <DataCard title="Reward Per Share">
                 <div className="staked-share-usd--amount">
                   {this.props.dashboard.rewardPerShare}
@@ -201,8 +156,6 @@ class Dashboard extends Component {
               </DataCard>
             </Col>
           </Row>
-
-          <Row></Row>
 
           <Row>
             <Col lg={6} sm={6} md={6}>
@@ -218,7 +171,7 @@ class Dashboard extends Component {
                     md={12}
                     className="stake-func--approved-amount"
                   >
-                    Earned: xx
+                    Earned: {this.props.dashboard.earned}
                   </Col>
                 </Row>
 
@@ -242,32 +195,6 @@ class Dashboard extends Component {
                     className="stake-func--approved-amount"
                   >
                     Appoved Amount: {this.props.dashboard.cashAllowance} Cash
-                  </Col>
-
-                  <Col
-                    lg={12}
-                    sm={12}
-                    md={12}
-                    className="stake-func--approved-amount"
-                  >
-                    Staked Balance: {this.props.dashboard.share} Share
-                  </Col>
-
-                  <br />
-
-                  <Col
-                    lg={12}
-                    sm={12}
-                    md={12}
-                    className="stake-func--approved-amount"
-                  >
-                    <Switch
-                      className="act-btn"
-                      {...SwitchStyle2}
-                      onChange={(showApprove) => this.setState({ showApprove })}
-                      checked={this.state.showApprove}
-                    />
-                    Show Approve:&nbsp;&nbsp;&nbsp;
                   </Col>
                 </Row>
                 <Row>
@@ -303,7 +230,7 @@ class Dashboard extends Component {
           onHide={() => this.setState({ showModal: false })}
         >
           <Modal.Header closeButton>
-            <Modal.Title>Contract Viewer</Modal.Title>
+            <Modal.Title>MEDICI</Modal.Title>
           </Modal.Header>
           <Modal.Body>{this.state.modalContent}</Modal.Body>
           <Modal.Footer>

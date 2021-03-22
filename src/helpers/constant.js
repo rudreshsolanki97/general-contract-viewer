@@ -1,3 +1,8 @@
+import BoardroomAbi from "../abi/boardroom.json";
+import ShareAbi from "../abi/share.json";
+import CashAbi from "../abi/cash.json";
+import BondAbi from "../abi/bond.json";
+
 export const SubPath = "/";
 
 export const RemoveExpo = (x) => {
@@ -17,4 +22,33 @@ export const RemoveExpo = (x) => {
   mag -= str.length;
   while (mag--) z += "0";
   return str + z;
+};
+
+export const CONTRACT_ADDRESS = {
+  cash: "0x250166887a349b1f64aBB1eB01bAe353b2E3f050",
+  boardroom: "0xA58524d9D021E55eb235c09179954eAdC020a9A4",
+  share: "0x4C2eD67B03A1F1f555CA2efA959E57645681215d",
+  bond: "0x9dBc9DBe8cD506394E7B25E7167A7128778c71B4",
+};
+
+export const CONTRACT_ABI = {
+  cash: CashAbi,
+  boardroom: BoardroomAbi,
+  share: ShareAbi,
+  bond: BondAbi,
+};
+
+/**
+ * @constant RUNNING_CHAIN  correct chain id, in decimal
+ */
+export const RUNNING_CHAIN = 97;
+
+export const IsHex = (n) => {
+  const re = /[0-9A-Fa-f]{6}/g;
+
+  if (re.test(n)) {
+    return true;
+  } else {
+    return false;
+  }
 };

@@ -1,7 +1,6 @@
 export const GetFunctionSignature = (abi) => {
   return abi.filter(
-    ({ type, name }) =>
-      type === "function" && (name === "stake" || name === "withdraw")
+    ({ type, name }) => type === "function" && name === "stake"
   );
 };
 

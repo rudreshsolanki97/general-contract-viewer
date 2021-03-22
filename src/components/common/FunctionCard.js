@@ -1,6 +1,6 @@
 import { Card, Container } from "react-bootstrap";
 
-import { DynamicForm } from "./RenderCustomView";
+import { DynamicForm } from "../RenderCustomView";
 
 const FunctionCard = ({
   title,

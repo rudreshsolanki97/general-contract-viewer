@@ -1,35 +1,88 @@
 import Web3 from "web3";
+import detectEthereumProvider from "@metamask/detect-provider";
 
 import BoardroomAbi from "../abi/boardroom.json";
 import ShareAbi from "../abi/share.json";
-import CashAbi from "../abi/cashAbi.json";
-import { RemoveExpo } from "../helpers/constant";
+import CashAbi from "../abi/cash.json";
+import {
+  CONTRACT_ABI,
+  CONTRACT_ADDRESS,
+  RemoveExpo,
+} from "../helpers/constant";
 
-let addresses;
+import * as actions from "../actions";
+import store from "../redux/store";
 
-export function isWeb3Supported() {
-  return Boolean(window.web3 || window.ethereum);
+let addresses, web3;
+
+export function IsWeb3Supported() {
+  return Boolean(window.ethereum);
+}
+
+export async function GetProvider() {
+  const provider = await detectEthereumProvider();
+  return provider;
+}
+
+export async function GetChainId() {
+  const provider = await detectEthereumProvider();
+  return await web3.eth.net.getId();
 }
 
 export async function initWeb3() {
-  const isWeb3Supported = isWeb3Supported();
-  if (!isWeb3Supported) return;
-
-  window.web3 = new Web3(window.web3.currentProvider);
+  const isWeb3Supported = IsWeb3Supported();
+  if (!isWeb3Supported) return store.dispatch(actions.WalletDisconnected());
+  if (GetCurrentProvider() !== "metamask")
+    return store.dispatch(actions.WalletDisconnected());
+  const isConnected = await window.ethereum.isConnected();
+  if (isConnected !== true) {
+    await window.ethereum.enable();
+  }
+  _initListerner();
+  web3 = new Web3(await GetProvider());
+  const accounts = await web3.eth.getAccounts();
+  addresses = accounts;
+  const chain_id = await web3.eth.getChainId();
+  return store.dispatch(
+    actions.WalletConnected({ address: accounts[0], chain_id })
+  );
 }
 
-export async function Connect() {
-  if (!window.ethereum) {
-    window.web3 = new Web3(window.web3.currentProvider);
-    return window.web3;
-  }
+export async function _initListerner() {
+  window.ethereum.removeAllListeners();
 
-  addresses = await window.ethereum.enable();
-  return addresses;
+  window.ethereum.on("accountsChanged", async (data) => {
+    const accounts = await web3.eth.getAccounts();
+    addresses = accounts;
+    store.dispatch(actions.AccountChanged(accounts[0]));
+  });
+
+  window.ethereum.on("chainChanged", async (data) => {
+    const chain_id = await web3.eth.getChainId();
+    store.dispatch(actions.NetworkChanged(chain_id));
+  });
+
+  window.ethereum.on("connect", async (data) => {
+    web3 = new Web3(await GetProvider());
+    const accounts = await web3.eth.getAccounts();
+    const chain_id = await web3.eth.getChainId();
+    addresses = accounts;
+    return store.dispatch(
+      actions.WalletConnected({ address: accounts[0], chain_id })
+    );
+  });
+
+  window.ethereum.on("disconnect", (data) => {
+    console.log("disconnect", data);
+  });
+
+  window.ethereum.on("message", (data) => {
+    console.log("message", data);
+  });
 }
 
 export function GetCurrentProvider() {
-  if (isWeb3Supported() !== true) return null;
+  if (IsWeb3Supported() !== true) return null;
 
   if (window.web3.currentProvider.isMetaMask) return "metamask";
 
@@ -96,46 +149,6 @@ export async function SubmitContractTx(method, stateMutability, ...params) {
         });
 
         return resp;
-
-        // const approveGasLimit = await shareContract.methods
-        //   .approve(boardRoomAddress, amount)
-        //   .estimateGas({ from: addresses[0] });
-        // const approveData = shareContract.methods
-        //   .approve(boardRoomAddress, amount)
-        //   .encodeABI();
-        // const approveTx = web3.eth.sendTransaction.request(
-        //   {
-        //     to: shareAddress,
-        //     from: addresses[0],
-        //     data: approveData,
-        //     gas: approveGasLimit,
-        //   },
-        //   (error, data) => {
-        //     console.log(data, error);
-        //   }
-        // );
-
-        // batch.add(approveTx);
-
-        // const stkeGasLimit = await contract.methods[method](
-        //   ...params
-        // ).estimateGas({ from: addresses[0] });
-        // const stakeData = contract.methods.stake(amount).encodeABI();
-        // const stakeTx = web3.eth.sendTransaction.request(
-        //   {
-        //     to: boardRoomAddress,
-        //     from: addresses[0],
-        //     data: stakeData,
-        //     gas: stkeGasLimit,
-        //   },
-        //   (error, data) => {
-        //     console.log(data, error);
-        //   }
-        // );
-
-        // batch.add(stakeTx);
-
-        // batch.execute();
       } else if (method === "approve") {
         let [spender, amount] = params;
         amount = RemoveExpo(parseFloat(amount) * 10 ** 18);
@@ -200,34 +213,14 @@ export async function SubmitContractTxGeneral(
       return resp;
     }
   } catch (e) {
-    console.log(e);
+    console.log("resp", e);
     return null;
   }
 }
 
 function getContractAddress(type) {
-  const boardRoomAddress = "0x8ad9662F33EA75e6AbB581DE62EEC52b43436C64";
-  const shareAddress = "0xc2e1acef50aE55661855E8dcB72adB182A3cC259";
-  const cashAddress = "0xD1102332a213E21faF78B69C03572031F3552c33";
-
-  switch (type) {
-    case "cash": {
-      return {
-        address: cashAddress,
-        abi: CashAbi,
-      };
-    }
-    case "share": {
-      return {
-        address: shareAddress,
-        abi: ShareAbi,
-      };
-    }
-    case "boardroom": {
-      return {
-        address: boardRoomAddress,
-        abi: BoardroomAbi,
-      };
-    }
-  }
+  return {
+    address: CONTRACT_ADDRESS[type],
+    abi: CONTRACT_ABI[type],
+  };
 }

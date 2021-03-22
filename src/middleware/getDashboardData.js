@@ -2,12 +2,10 @@ import * as types from "../actions/types";
 import { SubmitContractTxGeneral } from "../wallets/metamask";
 
 const boardRoomAddress = "0x8ad9662F33EA75e6AbB581DE62EEC52b43436C64";
-const shareAddress = "0xc2e1acef50aE55661855E8dcB72adB182A3cC259";
-const cashAddress = "0xD1102332a213E21faF78B69C03572031F3552c33";
 
 export const GetDashboardData = (store) => (next) => (action) => {
   if (action.type === types.WALLET_CONNECTED) {
-    const address = action.payload;
+    const { address } = action.payload;
 
     Promise.all([
       SubmitContractTxGeneral("balanceOf", "cash", "view", address),
@@ -34,6 +32,9 @@ export const GetDashboardData = (store) => (next) => (action) => {
           epoch,
           rewardPerShare,
         ] = resp;
+
+        console.log("resp", resp);
+
 
         store.dispatch({
           type: types.DASHBOARD_DATA,
