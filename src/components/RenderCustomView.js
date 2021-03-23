@@ -148,7 +148,8 @@ export const DynamicForm = (props) => {
           setLoading(true);
           SubmitContractTx(props.method, props.stateMutability, ...inputs)
             .then((resp) => {
-              if (_.isObject(resp)) resp = JSON.stringify(resp);
+              let  respStr;
+              if (_.isObject(resp)) respStr = JSON.stringify(resp);
 
               if (resp && resp.transactionHash) {
                 const content = (
@@ -172,7 +173,7 @@ export const DynamicForm = (props) => {
                         <span>Response</span>
                       </Col>
                       <Col lg={8} md={8} sm={8}>
-                        <span>{resp}</span>
+                        <span>{respStr}</span>
                       </Col>
                     </Row>
                   </Container>

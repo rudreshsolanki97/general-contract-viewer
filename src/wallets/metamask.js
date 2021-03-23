@@ -35,9 +35,7 @@ export async function initWeb3() {
   if (GetCurrentProvider() !== "metamask")
     return store.dispatch(actions.WalletDisconnected());
   const isConnected = await window.ethereum.isConnected();
-  if (isConnected !== true) {
-    await window.ethereum.enable();
-  }
+  await window.ethereum.enable();
   _initListerner();
   web3 = new Web3(await GetProvider());
   const accounts = await web3.eth.getAccounts();
@@ -117,16 +115,16 @@ export function GetCurrentProvider() {
 
 export async function SubmitContractTx(method, stateMutability, ...params) {
   try {
-    const boardRoomAddress = "0x8ad9662F33EA75e6AbB581DE62EEC52b43436C64";
-    const shareAddress = "0xc2e1acef50aE55661855E8dcB72adB182A3cC259";
-    const cashAddress = "0xD1102332a213E21faF78B69C03572031F3552c33";
-
-    const abi = BoardroomAbi;
-
     const web3 = new Web3(window.web3.currentProvider);
+    const { abi: boardroomAbi, address: boardroomAddress } = getContractAddress(
+      "boardroom"
+    );
+    const { abi: shareAbi, address: shareAddress } = getContractAddress(
+      "share"
+    );
 
-    const contract = new web3.eth.Contract(abi, boardRoomAddress);
-    const shareContract = new web3.eth.Contract(ShareAbi, shareAddress);
+    const contract = new web3.eth.Contract(boardroomAbi, boardroomAddress);
+    const shareContract = new web3.eth.Contract(shareAbi, shareAddress);
 
     if (stateMutability === "view") {
       const resp = await contract.methods[method](...params).call({

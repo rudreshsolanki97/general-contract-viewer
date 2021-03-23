@@ -8,17 +8,23 @@ import BalanceModal from "./modal/BalanceModal";
 
 class Header extends React.Component {
   renderCurrentAddressBox() {
+    if (this.props.wallet.connected === false) return "Not Connected";
+
+    if (!this.props.dashboard) return "Loading";
+
+    const balances = ["bond", "share", "cash"];
+
+    const resp = Object.keys(this.props.dashboard).reduce((acc, curr) => {
+      if (balances.includes(curr)) {
+        acc.push({ name: curr, balance: this.props.dashboard[curr] });
+      }
+      return acc;
+    }, []);
+
     return (
       <>
         <Col lg={12} sm={12} md={12}>
-          <BalanceModal
-            data={[
-              { name: "test", balance: 1 },
-              { name: "test", balance: 1 },
-              { name: "test", balance: 1 },
-              { name: "test", balance: 1 },
-            ]}
-          />
+          <BalanceModal data={[...resp]} />
         </Col>
       </>
     );
@@ -72,8 +78,8 @@ class Header extends React.Component {
   }
 }
 
-function mapStateToProps({ wallet }) {
-  return { wallet };
+function mapStateToProps({ wallet, dashboard }) {
+  return { wallet, dashboard };
 }
 
 export default connect(mapStateToProps)(Header);

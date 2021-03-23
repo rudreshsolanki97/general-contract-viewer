@@ -1,7 +1,6 @@
 import * as types from "../actions/types";
 import { SubmitContractTxGeneral } from "../wallets/metamask";
-
-const boardRoomAddress = "0x8ad9662F33EA75e6AbB581DE62EEC52b43436C64";
+import { CONTRACT_ADDRESS } from "../helpers/constant";
 
 export const GetDashboardData = (store) => (next) => (action) => {
   if (action.type === types.WALLET_CONNECTED) {
@@ -14,13 +13,14 @@ export const GetDashboardData = (store) => (next) => (action) => {
         "share",
         "view",
         address,
-        boardRoomAddress
+        CONTRACT_ADDRESS.boardroom
       ),
       SubmitContractTxGeneral("balanceOf", "share", "view", address),
       SubmitContractTxGeneral("balanceOf", "boardroom", "view", address),
       SubmitContractTxGeneral("earned", "boardroom", "view", address),
       SubmitContractTxGeneral("epoch", "boardroom", "view"),
       SubmitContractTxGeneral("rewardPerShare", "boardroom", "view"),
+      SubmitContractTxGeneral("balanceOf", "bond", "view", address),
     ])
       .then((resp) => {
         const [
@@ -31,10 +31,8 @@ export const GetDashboardData = (store) => (next) => (action) => {
           earned,
           epoch,
           rewardPerShare,
+          bond,
         ] = resp;
-
-        console.log("resp", resp);
-
 
         store.dispatch({
           type: types.DASHBOARD_DATA,
@@ -46,6 +44,7 @@ export const GetDashboardData = (store) => (next) => (action) => {
             cashAllowance: Multiplier(cashAllowance),
             epoch,
             rewardPerShare: Multiplier(rewardPerShare),
+            bond: Multiplier(bond),
           },
         });
       })
