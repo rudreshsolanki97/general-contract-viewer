@@ -8,6 +8,8 @@ const initialState = {
   cashAllowance: null,
   epoch: null,
   rewardPerShare: null,
+  dollarPrice: null,
+  bondCashAllowance: null,
 };
 
 const DashboardReducer = (state = initialState, payload) => {

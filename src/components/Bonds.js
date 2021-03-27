@@ -13,7 +13,7 @@ import {
   GetFunctionSignatureAll,
   GetRewardFunc,
 } from "../helpers/AbiParser";
-import BoardRoomAbi from "../abi/boardroom.json";
+import TreasureyAbi from "../abi/treasurey.json";
 import { CONTRACT_ADDRESS } from "../helpers/constant";
 
 class Dashboard extends Component {
@@ -40,7 +40,7 @@ class Dashboard extends Component {
   }
 
   renderAllFunc() {
-    const cards = [...GetFunctionSignatureAll(BoardRoomAbi)];
+    const cards = [...GetFunctionSignatureAll(TreasureyAbi)];
     return cards.map(({ name, inputs = [], stateMutability }, i) => (
       <Col key={i + 1} lg={6} md={6} sm={6}>
         <FunctionCard
@@ -58,8 +58,10 @@ class Dashboard extends Component {
     ));
   }
 
-  renderStakeFunc() {
-    const cards = [...GetFunctionSignature(BoardRoomAbi)];
+  renderBuyBonds() {
+    const cards = TreasureyAbi.filter(
+      ({ type, name }) => type === "function" && name === "buyBonds"
+    );
 
     if (this.props.dashboard.cashAllowance === 0 || this.state.showApprove) {
       cards.splice(0, 0, {
@@ -90,7 +92,6 @@ class Dashboard extends Component {
 
     return cards.map(({ name, inputs = [], stateMutability }, i) => {
       if (name === "approve") {
-        console.log("inputs", inputs);
         return (
           <FunctionCard
             title={name}
@@ -102,7 +103,7 @@ class Dashboard extends Component {
               const q = { name: e.name, type: "text" };
               if (e.name === "spender") {
                 q.disabled = true;
-                q.value = CONTRACT_ADDRESS.boardroom;
+                q.value = CONTRACT_ADDRESS.treasury;
               }
               return { ...q };
             })}
@@ -130,8 +131,10 @@ class Dashboard extends Component {
     });
   }
 
-  renderClaimRewardFunc() {
-    const cards = [...GetRewardFunc(BoardRoomAbi)];
+  renderRedeemBonds() {
+    const cards = TreasureyAbi.filter(
+      ({ type, name }) => type === "function" && name === "redeemBonds"
+    );
     return cards.map(({ name, inputs = [], stateMutability }, i) => (
       <FunctionCard
         title={name}
@@ -155,32 +158,29 @@ class Dashboard extends Component {
         <Container>
           <Row>
             <Col lg={12} sm={12} md={12} className="boardroom__banner">
-              BOARDROOM
+              BONDS
             </Col>
           </Row>
 
           <Row>
-            <Col lg={4} sm={4} md={4} className="epoch">
-              <DataCard title="Current Epoch">
-                <div className="epoch--count">{this.props.dashboard.epoch}</div>
-                <div className="epoch--timer"></div>
+            <Col lg={3} sm={3} md={3} className="staked-share"></Col>
+
+            <Col lg={3} sm={3} md={3} className="staked-share">
+              <DataCard title="Dollar Price">
+                <div className="staked-share--amount">
+                  {this.props.dashboard.dollarPrice}
+                </div>
+              </DataCard>
+            </Col>
+            <Col lg={3} sm={3} md={3} className="staked-share-usd">
+              <DataCard title="Bonds Balance">
+                <div className="staked-share-usd--amount">
+                  {this.props.dashboard.bond}
+                </div>
               </DataCard>
             </Col>
 
-            <Col lg={4} sm={4} md={4} className="staked-share">
-              <DataCard title="Staked Shares">
-                <div className="staked-share--amount">
-                  {this.props.dashboard.stake}
-                </div>
-              </DataCard>
-            </Col>
-            <Col lg={4} sm={4} md={4} className="staked-share-usd">
-              <DataCard title="Reward Per Share">
-                <div className="staked-share-usd--amount">
-                  {this.props.dashboard.rewardPerShare}
-                </div>
-              </DataCard>
-            </Col>
+            <Col lg={3} sm={3} md={3} className="staked-share"></Col>
           </Row>
 
           <Row>
@@ -188,21 +188,21 @@ class Dashboard extends Component {
               <div className="claim-reward">
                 <Row>
                   <Col className="claim-reward--title" lg={12} sm={12} md={12}>
-                    Claim Rewards
+                    Redeem Bonds
                   </Col>
 
-                  <Col
+                  {/* <Col
                     lg={12}
                     sm={12}
                     md={12}
                     className="stake-func--approved-amount"
                   >
                     Earned: {this.props.dashboard.earned} Cash
-                  </Col>
+                  </Col> */}
                 </Row>
 
                 <Row>
-                  <Col>{this.renderClaimRewardFunc()}</Col>
+                  <Col>{this.renderRedeemBonds()}</Col>
                 </Row>
               </div>
             </Col>
@@ -211,7 +211,7 @@ class Dashboard extends Component {
               <div className="stake-func">
                 <Row>
                   <Col className="stake-func--title" lg={12} sm={12} md={12}>
-                    Stake
+                    Buy Bonds
                   </Col>
 
                   <Col
@@ -220,7 +220,7 @@ class Dashboard extends Component {
                     md={12}
                     className="stake-func--approved-amount"
                   >
-                    Appoved Amount: {this.props.dashboard.cashAllowance} Cash
+                    Appoved Amount: {this.props.dashboard.bondCashAllowance} Cash
                   </Col>
 
                   <Col
@@ -239,7 +239,7 @@ class Dashboard extends Component {
                   </Col>
                 </Row>
                 <Row>
-                  <Col>{this.renderStakeFunc()}</Col>
+                  <Col>{this.renderBuyBonds()}</Col>
                 </Row>
               </div>
             </Col>

@@ -1,9 +1,6 @@
 import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 
-import BoardroomAbi from "../abi/boardroom.json";
-import ShareAbi from "../abi/share.json";
-import CashAbi from "../abi/cash.json";
 import {
   CONTRACT_ABI,
   CONTRACT_ADDRESS,
@@ -133,7 +130,11 @@ export async function SubmitContractTx(method, stateMutability, ...params) {
 
       return resp;
     } else {
-      if (method === "stake") {
+      if (
+        method === "stake" ||
+        method === "redeemBonds" ||
+        method === "buyBonds"
+      ) {
         let amount = params[0];
         amount = RemoveExpo(parseFloat(amount) * 10 ** 18);
         console.log("from", addresses[0], amount);

@@ -10,6 +10,7 @@ import PageNavigation from "./components/Navigation";
 
 import Dashboard from "./components/Dashboard";
 import Boardroom from "./components/Boardroom";
+import Bonds from "./components/Bonds";
 
 import "./assets/scss/main.scss";
 import { initWeb3 } from "./wallets/metamask";
@@ -23,7 +24,7 @@ class App extends Component {
     const links = [
       { link: "/", name: "home" },
       { link: "/boardroom", name: "boardroom" },
-      // { link: "/", name: "bonds" },
+      { link: "/bonds", name: "bonds" },
       // { link: "/", name: "bank" },
     ];
 
@@ -39,6 +40,10 @@ class App extends Component {
 
           <Route path="/boardroom" exact={true}>
             <Boardroom />
+          </Route>
+
+          <Route path="/bonds" exact={true}>
+            <Bonds />
           </Route>
         </Switch>
       </div>

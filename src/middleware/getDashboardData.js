@@ -15,12 +15,21 @@ export const GetDashboardData = (store) => (next) => (action) => {
         address,
         CONTRACT_ADDRESS.boardroom
       ),
+
       SubmitContractTxGeneral("balanceOf", "share", "view", address),
       SubmitContractTxGeneral("balanceOf", "boardroom", "view", address),
       SubmitContractTxGeneral("earned", "boardroom", "view", address),
       SubmitContractTxGeneral("epoch", "boardroom", "view"),
       SubmitContractTxGeneral("rewardPerShare", "boardroom", "view"),
       SubmitContractTxGeneral("balanceOf", "bond", "view", address),
+      SubmitContractTxGeneral(
+        "allowance",
+        "share",
+        "view",
+        address,
+        CONTRACT_ADDRESS.treasury
+      ),
+      SubmitContractTxGeneral("getDollarPrice", "treasury", "view"),
     ])
       .then((resp) => {
         const [
@@ -32,7 +41,11 @@ export const GetDashboardData = (store) => (next) => (action) => {
           epoch,
           rewardPerShare,
           bond,
+          bondCashAllowance,
+          dollarPrice,
         ] = resp;
+
+        console.log("dollarPrice", dollarPrice);
 
         store.dispatch({
           type: types.DASHBOARD_DATA,
@@ -45,6 +58,8 @@ export const GetDashboardData = (store) => (next) => (action) => {
             epoch,
             rewardPerShare: Multiplier(rewardPerShare),
             bond: Multiplier(bond),
+            bondCashAllowance: Multiplier(bondCashAllowance),
+            dollarPrice: Multiplier(dollarPrice),
           },
         });
       })

@@ -3,6 +3,7 @@ import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import _ from "lodash";
 
 import { SubmitContractTx } from "../wallets/metamask";
+import { EXPLORER } from "../helpers/constant";
 
 const RenderInput = ({ field, ...inputProps }) => (
   <Row>
@@ -148,7 +149,7 @@ export const DynamicForm = (props) => {
           setLoading(true);
           SubmitContractTx(props.method, props.stateMutability, ...inputs)
             .then((resp) => {
-              let  respStr;
+              let respStr;
               if (_.isObject(resp)) respStr = JSON.stringify(resp);
 
               if (resp && resp.transactionHash) {
@@ -159,7 +160,14 @@ export const DynamicForm = (props) => {
                         <span>Transaction Hash</span>
                       </Col>
                       <Col lg={8} md={8} sm={8}>
-                        <span>{resp.transactionHash}</span>
+                        <span>
+                          <a
+                            target="_blank"
+                            href={`${EXPLORER}/tx/${resp.transactionHash}`}
+                          >
+                            TX HASH
+                          </a>
+                        </span>
                       </Col>
                     </Row>
                   </Container>
