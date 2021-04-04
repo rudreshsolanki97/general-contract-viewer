@@ -31,6 +31,7 @@
   margin: 1rem;
   border-radius: 1rem;
   height: min-content;
+  background-color: $color-background-primary-lighter;
 
   &-body {
     padding: 2rem;
@@ -42,12 +43,78 @@
     text-align: left;
     padding: 1rem;
     margin: 1rem 1rem 0;
+    text-transform: uppercase;
+
+    $parent: &;
+
+    &__function-name {
+    }
+
+    .view {
+      background-color: $color-light-blue;
+    }
+    .nonpayable {
+      background-color: $color-new-orange;
+    }
+    .payable {
+      background-color: $color-new-red;
+    }
+
+    &__state-mutability {
+      color: white;
+      font-size: small;
+      padding: 0.5rem;
+      border-radius: 2px;
+      position: absolute;
+      right: 2rem;
+    }
+
+    &__bottom {
+      height: 0.5rem;
+      width: 3rem;
+      background-color: $color-light-blue;
+    }
+  }
+
+  .field-label {
+    background-color: $color-background-primary-lighter;
+    text-transform: capitalize;
+    border: none;
+  }
+
+  .btn {
+    margin: 0.5rem;
+  }
+}
+
+.custom-card-3 {
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 1rem;
+  height: min-content;
+
+  max-width: fit-content;
+
+  &-body {
+    padding: 2rem;
+  }
+
+  .title {
+    font-size: 2rem;
+    color: $color-primary;
+    text-align: center;
+    padding: 1rem;
+    margin: 1rem 1rem 0;
 
     &--bottom {
       height: 0.5rem;
       width: 3rem;
       background-color: $color-light-blue;
     }
+  }
+
+  .card-body {
+    text-align: center;
   }
 
   .btn {

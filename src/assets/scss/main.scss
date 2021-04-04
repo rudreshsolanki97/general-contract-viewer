@@ -16,9 +16,15 @@
 @import "components/input";
 @import "components/decodedTable";
 @import "components/modal";
+@import "components/genobjectview";
+@import "components/abi-input";
 
 @import "layouts/header";
 @import "layouts/main-panel";
 @import "layouts/footer";
+@import "layouts/page-nav";
+@import "layouts/app";
 
 @import "pages/dashboard";
+@import "pages/single-matka";
+@import "pages/general-contract-viewer";

@@ -1,0 +1,28 @@
+.general-contract-viewer {
+  .accordion {
+    display: block;
+    width: 100%;
+    margin-left: 2rem;
+    margin-right: 2rem;
+
+    .card {
+      border: 1px solid $color-primary-light;
+    }
+
+    .card-header {
+      background-color: $color-background-primary-lighter;
+      text-transform: uppercase;
+      color: #2e4250;
+      font-size: 1.5rem;
+
+      span {
+        margin-left: 1rem;
+      }
+    }
+
+    .card-body {
+      padding: 0;
+      background-color: $color-background-primary-light;
+    }
+  }
+}

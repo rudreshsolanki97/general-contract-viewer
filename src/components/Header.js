@@ -1,18 +1,89 @@
 import React from "react";
-import { Navbar } from "react-bootstrap";
-
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-function Header() {
-  return (
-    <Navbar className="custom-header" bg="light" expand="lg">
-      <Link className="navbar-brand" to="/raw-tx">
-        Contract Viewer
-      </Link>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav"></Navbar.Collapse>
-    </Navbar>
-  );
+import { Navbar, Button, Col } from "react-bootstrap";
+
+import BalanceModal from "./common/BalanceModal";
+import { PROJECT_NAME } from "../helpers/constant";
+import { initWeb3 } from "../wallets/metamask";
+
+class Header extends React.Component {
+  renderCurrentAddressBox() {
+    if (this.props.wallet.connected === false) return "Not Connected";
+
+    if (!this.props.balance) return "Loading";
+
+    const balances = ["native", "token"];
+
+    const resp = Object.keys(this.props.balance).reduce((acc, curr) => {
+      if (balances.includes(curr)) {
+        acc.push({ name: curr, balance: this.props.balance[curr] });
+      }
+      return acc;
+    }, []);
+
+    return (
+      <>
+        <Col lg={12} sm={12} md={12}>
+          <BalanceModal data={[...resp]} />
+        </Col>
+      </>
+    );
+  }
+
+  getWalletBtn() {
+    if (this.props.wallet.connected && this.props.wallet.valid_network) {
+      return (
+        <>
+          {/* <div className="ml-auto">{this.renderCurrentAddressBox()}</div> */}
+          <div className="ml-auto">
+            <Button disabled={true} aria-controls="basic-navbar-nav">
+              WALLET CONNECTED
+            </Button>
+          </div>
+        </>
+      );
+    } else if (
+      this.props.wallet.connected &&
+      !this.props.wallet.valid_network
+    ) {
+      return (
+        <>
+          {/* <div className="ml-auto">{this.renderCurrentAddressBox()}</div> */}
+          <div className="ml-auto">
+            <Button disabled={true} aria-controls="basic-navbar-nav">
+              INCORRECT NETWORK
+            </Button>
+          </div>
+        </>
+      );
+    } else {
+      return (
+        <div className="ml-auto">
+          <Button onClick={initWeb3} aria-controls="basic-navbar-nav">
+            CONNECT WALLET
+          </Button>
+        </div>
+      );
+    }
+  }
+
+  render() {
+    return (
+      <Navbar className="custom-header" bg="light" expand="lg">
+        <Link className="navbar-brand" to="/">
+          {PROJECT_NAME}
+        </Link>
+
+        {this.getWalletBtn()}
+      </Navbar>
+    );
+  }
 }
 
-export default Header;
+function mapStateToProps({ wallet, balance }) {
+  return { wallet, balance };
+}
+
+export default connect(mapStateToProps)(Header);

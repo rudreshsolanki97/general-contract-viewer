@@ -1,40 +1,58 @@
 import React, { Component } from "react";
-import { Switch, Route } from "react-router-dom";
-import _ from "lodash";
+import { connect } from "react-redux";
+
+
+import * as actions from "./actions/index";
 
 import Header from "./components/Header";
-import Dashboard from "./components/Dashboard";
+
+import CacheBuster from "./cacheBuster";
+import packageJson from "../package.json";
+
 
 import "./assets/scss/main.scss";
-import {
-  GetCurrentProvider,
-  Connect,
-  SubmitContractTx,
-} from "./wallets/metamask";
+import { initWeb3 } from "./wallets/metamask";
+
+import GenContractInteractor from "./components/GenContractInteractor";
+
+
+
 
 class App extends Component {
   componentDidMount() {
-    const provider = GetCurrentProvider();
-    if (!_.isEqual("metamask", provider)) {
-      alert("please install / login into metamask");
-    } else {
-      Connect();
-      // SubmitContractTx();
-    }
+    // initWeb3();
   }
 
   render() {
+    // const active = window.location.pathname;
+
+    // const links = [
+    //   { link: "/", name: "home" },
+    //   { link: "/single-matka", name: "Single Matka" },
+    // ];
+
     return (
       <div className="App">
+        <CacheBuster>
+          {({ loading, isLatestVersion, refreshCacheAndReload }) => {
+            // console.log("[*] cache policy", loading, isLatestVersion);
+            if (loading) return null;
+            console.log(`UI Version:`, packageJson.version);
+            if (!loading && !isLatestVersion) {
+              // You can decide how and when you want to force reload
+              refreshCacheAndReload();
+            }
+
+            return null;
+          }}
+        </CacheBuster>
+
         <Header />
 
-        <Switch>
-          <Route path="/">
-            <Dashboard />
-          </Route>
-        </Switch>
+        <GenContractInteractor />
       </div>
     );
   }
 }
-export default App;
+
+export default connect(null, actions)(App);

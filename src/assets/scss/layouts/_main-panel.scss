@@ -8,7 +8,6 @@ $main-panel-bottom-pad: 1rem;
 
 .main-panel {
   padding: 1rem;
-  background-color: $color-background-primary;
-  height: calc(100vh - #{$header-height} - #{$main-panel-bottom-pad});
+  height: calc(100vh - #{$header-height});
   display: flex;
 }

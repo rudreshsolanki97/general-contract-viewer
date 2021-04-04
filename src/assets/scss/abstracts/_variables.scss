@@ -2,7 +2,14 @@ $color-primary: #2a3f4c;
 $color-primary-light: lighten($color-primary, 10%);
 $color-primary-lighter: lighten($color-primary, 50%);
 
-$color-background-primary: #eef2f5;
+$color-background-primary: #262843;
+$color-background-primary-light: lighten($color-background-primary, 10%);
+$color-background-primary-lighter: lighten($color-background-primary, 50%);
+
+$font-color-primary: $color-background-primary-lighter;
+
+$color-blue-dull: #355f7d;
+$color-orange-dull:#c97539;
 
 $color-light-grey: lightgrey;
 $color-light-grey-light: #cdcdcd;
@@ -15,7 +22,7 @@ $color-new-blue: #007bff;
 $color-new-green: #25ac37;
 $color-new-red: #ff0000;
 $color-new-orange: #ff8c00;
-
+$color-new-yellow:#ffc107;
 
 $color-light-blue: #70d6ff;
 $color-very-light-blue: #f8f9fa;

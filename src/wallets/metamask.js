@@ -1,36 +1,87 @@
 import Web3 from "web3";
+import detectEthereumProvider from "@metamask/detect-provider";
 
-import BoardroomAbi from "../abi/boardroom.json";
+import {
+  CONTRACT_ABI,
+  CONTRACT_ADDRESS,
+  AddMultiplier,
+} from "../helpers/constant";
 
-let addresses;
+import * as actions from "../actions";
+import store from "../redux/store";
 
-export function isWeb3Supported() {
-  return Boolean(window.web3 || window.ethereum);
+let addresses, web3;
+
+export function IsWeb3Supported() {
+  return Boolean(window.ethereum);
+}
+
+export async function GetProvider() {
+  const provider = await detectEthereumProvider();
+  return provider;
+}
+
+export async function GetChainId() {
+  return await web3.eth.net.getId();
 }
 
 export async function initWeb3() {
-  const isWeb3Supported = isWeb3Supported();
-  if (!isWeb3Supported) return;
-
-  window.web3 = new Web3(window.web3.currentProvider);
+  try {
+    const isWeb3Supported = IsWeb3Supported();
+    if (!isWeb3Supported) return store.dispatch(actions.WalletDisconnected());
+    if (GetCurrentProvider() !== "metamask")
+      return store.dispatch(actions.WalletDisconnected());
+    // const isConnected = await window.ethereum.isConnected();
+    await window.ethereum.enable();
+    _initListerner();
+    web3 = new Web3(await GetProvider());
+    const accounts = await web3.eth.getAccounts();
+    addresses = accounts;
+    const chain_id = await web3.eth.getChainId();
+    return store.dispatch(
+      actions.WalletConnected({ address: accounts[0], chain_id })
+    );
+  } catch (e) {
+    console.log(e);
+  }
 }
 
-export async function Connect() {
-  if (!window.ethereum) {
-    window.web3 = new Web3(window.web3.currentProvider);
-    return window.web3;
-  }
+export async function _initListerner() {
+  window.ethereum.removeAllListeners();
 
-  addresses = await window.ethereum.enable().catch((error) => {
-    if (error == "User rejected provider access")
-      alert("Need Metamask for functional site");
-    // throw new Error("WEB3_CONNECT_FAILED_USER_REJECTED_PROVIDER_ACCESS");
+  window.ethereum.on("accountsChanged", async (data) => {
+    const accounts = await web3.eth.getAccounts();
+    addresses = accounts;
+    store.dispatch(actions.AccountChanged(accounts[0]));
   });
-  return addresses;
+
+  window.ethereum.on("chainChanged", async (data) => {
+    const chain_id = await web3.eth.getChainId();
+    store.dispatch(actions.NetworkChanged(chain_id));
+  });
+
+  window.ethereum.on("connect", async (data) => {
+    web3 = new Web3(await GetProvider());
+    const accounts = await web3.eth.getAccounts();
+    const chain_id = await web3.eth.getChainId();
+    addresses = accounts;
+    return store.dispatch(
+      actions.WalletConnected({ address: accounts[0], chain_id })
+    );
+  });
+
+  window.ethereum.on("disconnect", (data) => {
+    console.log("disconnect", data);
+    return store.dispatch(actions.WalletDisconnected());
+  });
+
+  window.ethereum.on("message", (data) => {
+    console.log("message", data);
+  });
 }
 
 export function GetCurrentProvider() {
-  if (isWeb3Supported() !== true) return null;
+  if (IsWeb3Supported() !== true) return null;
 
   if (window.web3.currentProvider.isMetaMask) return "metamask";
 
@@ -63,25 +114,57 @@ export function GetCurrentProvider() {
   return "unknown";
 }
 
-export async function SubmitContractTx(method, stateMutability, ...params) {
-  const boardRoomAddress = "0x8ad9662F33EA75e6AbB581DE62EEC52b43436C64";
-  const abi = BoardroomAbi;
-
+export const GetNativeBalance = (address) => {
   const web3 = new Web3(window.web3.currentProvider);
+  return web3.eth.getBalance(address);
+};
 
-  const contract = new web3.eth.Contract(abi, boardRoomAddress);
+export async function SubmitContractTxGeneral(
+  method,
+  type,
+  stateMutability,
+  ...params
+) {
+  try {
+    const web3 = new Web3(window.web3.currentProvider);
 
-  if (stateMutability === "view") {
-    const resp = await contract.methods[method](...params).call({
-      from: addresses[0],
-    });
+    const { address, abi } = getContractAddress(type);
 
-    return resp;
-  } else {
-    const resp = await contract.methods[method](...params).send({
-      from: addresses[0],
-    });
+    const contract = new web3.eth.Contract(abi, address);
 
-    return resp;
+    if (stateMutability === "view") {
+      const resp = await contract.methods[method](...params).call();
+
+      return resp;
+    } else {
+      const gasLimit = await contract.methods[method](...params).estimateGas({
+        from: addresses[0],
+      });
+      const resp = await contract.methods[method](...params).send({
+        from: addresses[0],
+        gas: gasLimit,
+      });
+
+      return resp;
+    }
+  } catch (e) {
+    console.log("resp", IsJsonRpcError(e));
+    console.log("resp", e);
+    throw e;
   }
+}
+
+export const IsJsonRpcError = (err) => {
+  return err.message.split("\n")[0] === "Internal JSON-RPC error.";
+};
+
+export const GetJsonRpcError = (err) => {
+  return JSON.parse(err.message.split("\n").slice(1).join("").trim());
+};
+
+function getContractAddress(type) {
+  return {
+    address: CONTRACT_ADDRESS[type],
+    abi: CONTRACT_ABI[type],
+  };
 }
