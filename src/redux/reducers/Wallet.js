@@ -5,6 +5,9 @@ const initialState = {
   address: "",
   chain_id: null,
   valid_network: false,
+  explorer: "",
+  rpc_provider: "",
+  ws_provider: "",
 };
 
 const WalletReducer = (state = initialState, payload) => {

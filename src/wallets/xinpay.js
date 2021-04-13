@@ -1,18 +1,13 @@
+import Xdc3 from "xdc3";
 import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
-
-import {
-  CONTRACT_ABI,
-  CONTRACT_ADDRESS,
-  AddMultiplier,
-} from "../helpers/constant";
 
 import * as actions from "../actions";
 import store from "../redux/store";
 
-let addresses, web3;
+let addresses, xdc3;
 
-export function IsWeb3Supported() {
+export function IsXdc3Supported() {
   return Boolean(window.ethereum);
 }
 
@@ -22,22 +17,24 @@ export async function GetProvider() {
 }
 
 export async function GetChainId() {
-  return await web3.eth.net.getId();
+  let xdc3 = new Xdc3(await GetProvider());
+  return await xdc3.eth.net.getId();
 }
 
-export async function initWeb3() {
+export async function initXdc3() {
   try {
-    const isWeb3Supported = IsWeb3Supported();
-    if (!isWeb3Supported) return store.dispatch(actions.WalletDisconnected());
-    if (GetCurrentProvider() !== "metamask")
+    const isXdc3Supported = IsXdc3Supported();
+    if (!isXdc3Supported) return store.dispatch(actions.WalletDisconnected());
+    if ((await GetCurrentProvider()) !== "xinpay")
       return store.dispatch(actions.WalletDisconnected());
     // const isConnected = await window.ethereum.isConnected();
     await window.ethereum.enable();
     _initListerner();
-    web3 = new Web3(await GetProvider());
-    const accounts = await web3.eth.getAccounts();
+    const provider = await GetProvider();
+    xdc3 = new Xdc3(provider);
+    const accounts = await xdc3.eth.getAccounts();
     addresses = accounts;
-    const chain_id = await web3.eth.getChainId();
+    const chain_id = await xdc3.eth.getChainId();
     return store.dispatch(
       actions.WalletConnected({ address: accounts[0], chain_id })
     );
@@ -50,20 +47,20 @@ export async function _initListerner() {
   window.ethereum.removeAllListeners();
 
   window.ethereum.on("accountsChanged", async (data) => {
-    const accounts = await web3.eth.getAccounts();
+    const accounts = await xdc3.eth.getAccounts();
     addresses = accounts;
     store.dispatch(actions.AccountChanged(accounts[0]));
   });
 
   window.ethereum.on("chainChanged", async (data) => {
-    const chain_id = await web3.eth.getChainId();
+    const chain_id = await xdc3.eth.getChainId();
     store.dispatch(actions.NetworkChanged(chain_id));
   });
 
   window.ethereum.on("connect", async (data) => {
-    web3 = new Web3(await GetProvider());
-    const accounts = await web3.eth.getAccounts();
-    const chain_id = await web3.eth.getChainId();
+    xdc3 = new Xdc3(await GetProvider());
+    const accounts = await xdc3.eth.getAccounts();
+    const chain_id = await xdc3.eth.getChainId();
     addresses = accounts;
     return store.dispatch(
       actions.WalletConnected({ address: accounts[0], chain_id })
@@ -80,10 +77,15 @@ export async function _initListerner() {
   });
 }
 
-export function GetCurrentProvider() {
-  if (IsWeb3Supported() !== true) return null;
+export async function GetCurrentProvider() {
+  if (IsXdc3Supported() !== true) return null;
 
-  if (window.web3.currentProvider.isMetaMask) return "metamask";
+  if (window.web3.currentProvider.isMetaMask) {
+    const chainId = await GetChainId();
+    console.log("chainId", chainId, [50, 51].includes(chainId));
+    if ([50, 51].includes(chainId)) return "xinpay";
+    return "metamask";
+  }
 
   if (window.web3.currentProvider.isTrust) return "trust";
 
@@ -96,7 +98,7 @@ export function GetCurrentProvider() {
   if (window.web3.currentProvider.constructor.name === "EthereumProvider")
     return "mist";
 
-  if (window.web3.currentProvider.constructor.name === "Web3FrameProvider")
+  if (window.web3.currentProvider.constructor.name === "Xdc3FrameProvider")
     return "parity";
 
   if (
@@ -115,8 +117,8 @@ export function GetCurrentProvider() {
 }
 
 export const GetNativeBalance = (address) => {
-  const web3 = new Web3(window.web3.currentProvider);
-  return web3.eth.getBalance(address);
+  const xdc3 = new Xdc3(window.web3.currentProvider);
+  return xdc3.eth.getBalance(address);
 };
 
 export async function SubmitContractTxGeneral(
@@ -128,11 +130,11 @@ export async function SubmitContractTxGeneral(
   ...params
 ) {
   try {
-    const web3 = new Web3(window.web3.currentProvider);
+    const xdc3 = new Xdc3(window.web3.currentProvider);
 
     // const { address, abi } = getContractAddress(type);
 
-    const contract = new web3.eth.Contract(abi, address);
+    const contract = new xdc3.eth.Contract(abi, address);
 
     if (stateMutability === "view") {
       const resp = await contract.methods[method](...params).call();
@@ -163,10 +165,3 @@ export const IsJsonRpcError = (err) => {
 export const GetJsonRpcError = (err) => {
   return JSON.parse(err.message.split("\n").slice(1).join("").trim());
 };
-
-function getContractAddress(type) {
-  return {
-    address: CONTRACT_ADDRESS[type],
-    abi: CONTRACT_ABI[type],
-  };
-}

@@ -34,13 +34,22 @@ export const CONTRACT_ABI = {
 };
 
 /**
- * @constant RUNNING_CHAIN  correct chain id, in decimal
+ * @constant VALID_CHAINS  correct chain id, in decimal
  */
-export const RUNNING_CHAIN = 97;
+export const VALID_CHAINS = [97, 56, 50, 51];
 
-export const EXPLORER = "https://testnet.bscscan.com/";
+export const CHAIN_DATA = {
+  97: "https://testnet.bscscan.com/",
+  56: "https://bscscan.com/",
+};
 
-export const HTTP_PROVIDER = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+export const HTTP_PROVIDER = {
+  97: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+  50: "https://rpc.xinfin.network",
+  51: "https://rpc.apothem.network",
+};
+
+export const WS_PROVIDER = {};
 
 export const ObjToArr = (obj) => Object.keys(obj).map((key) => obj[key]);
 

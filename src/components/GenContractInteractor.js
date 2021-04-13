@@ -70,6 +70,8 @@ class Dashboard extends Component {
             stateMutability={stateMutability}
             setShowModal={this.setShowModal}
             setModalContent={this.setModalContent}
+            abi={this.state.contractAbi}
+            address={this.state.contractAddress}
           />
         </Col>
       ));

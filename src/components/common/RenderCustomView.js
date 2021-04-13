@@ -239,6 +239,8 @@ export const DynamicForm = (props) => {
             props.method,
             props.contractType || "token",
             props.stateMutability,
+            props.abi,
+            props.address,
             ...inputs
           )
             .then((resp) => {
@@ -255,12 +257,12 @@ export const DynamicForm = (props) => {
                       </Col>
                       <Col lg={8} md={8} sm={8}>
                         <span>
-                          <a
+                          {/* <a
                             target="_blank"
                             href={`${EXPLORER}/tx/${resp.transactionHash}`}
                           >
                             TX HASH
-                          </a>
+                          </a> */}
                         </span>
                       </Col>
                     </Row>

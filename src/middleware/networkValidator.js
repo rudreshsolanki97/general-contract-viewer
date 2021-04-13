@@ -2,7 +2,7 @@ import _ from "lodash";
 
 import * as types from "../actions/types";
 import * as actions from "../actions";
-import { IsHex, RUNNING_CHAIN } from "../helpers/constant";
+import { IsHex, VALID_CHAINS } from "../helpers/constant";
 
 export const NetworkValidation = (store) => (next) => (action) => {
   if (
@@ -18,7 +18,8 @@ export const NetworkValidation = (store) => (next) => (action) => {
       let { chain_id } = action.payload;
       if (String(chain_id).startsWith("0x") && IsHex(chain_id))
         chain_id = parseInt(chain_id, 16);
-      if (chain_id === RUNNING_CHAIN) store.dispatch(actions.NetworkValid());
+      if (VALID_CHAINS.includes(chain_id))
+        store.dispatch(actions.NetworkValid());
       else store.dispatch(actions.NetworkInValid());
     }
   }

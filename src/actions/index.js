@@ -1,3 +1,4 @@
+import { CHAIN_DATA } from "../helpers/constant";
 import * as Types from "./types";
 
 export const WalletConnected = ({ address, chain_id }) => {
@@ -36,6 +37,13 @@ export const WalletDisconnected = () => {
 export const NetworkValid = () => {
   return {
     type: Types.NETWORK_VALID,
+  };
+};
+
+export const SetChainData = (chain_id) => {
+  return {
+    type: Types.SET_CHAIN_DATA,
+    payload: CHAIN_DATA[`${chain_id}`],
   };
 };
 

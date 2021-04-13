@@ -7,6 +7,7 @@ import { Navbar, Button, Col } from "react-bootstrap";
 import BalanceModal from "./common/BalanceModal";
 import { PROJECT_NAME } from "../helpers/constant";
 import { initWeb3 } from "../wallets/metamask";
+import WalletConnect from "./wallet-connect/walletConnect";
 
 class Header extends React.Component {
   renderCurrentAddressBox() {
@@ -33,40 +34,24 @@ class Header extends React.Component {
   }
 
   getWalletBtn() {
+    let btnName = "CONNECT",
+      disabled = false;
+
     if (this.props.wallet.connected && this.props.wallet.valid_network) {
-      return (
-        <>
-          {/* <div className="ml-auto">{this.renderCurrentAddressBox()}</div> */}
-          <div className="ml-auto">
-            <Button disabled={true} aria-controls="basic-navbar-nav">
-              WALLET CONNECTED
-            </Button>
-          </div>
-        </>
-      );
+      btnName = "WALLET CONNECTED";
+      disabled = true;
     } else if (
       this.props.wallet.connected &&
       !this.props.wallet.valid_network
     ) {
-      return (
-        <>
-          {/* <div className="ml-auto">{this.renderCurrentAddressBox()}</div> */}
-          <div className="ml-auto">
-            <Button disabled={true} aria-controls="basic-navbar-nav">
-              INCORRECT NETWORK
-            </Button>
-          </div>
-        </>
-      );
-    } else {
-      return (
-        <div className="ml-auto">
-          <Button onClick={initWeb3} aria-controls="basic-navbar-nav">
-            CONNECT WALLET
-          </Button>
-        </div>
-      );
+      btnName = "INCORRECT NETWORK";
+      disabled = true;
     }
+    return (
+      <div className="ml-auto">
+        <WalletConnect disabled={disabled} btnName={btnName} />
+      </div>
+    );
   }
 
   render() {

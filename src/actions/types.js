@@ -7,3 +7,5 @@ export const WALLET_OPENED = "WALLET_OPENED";
 
 export const NETWORK_VALID = "NETWORK_VALID";
 export const NETWORK_INVALID = "NETWORK_INVALID";
+
+export const SET_CHAIN_DATA = "SET_CHAIN_DATA";
