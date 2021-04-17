@@ -8,6 +8,8 @@ const FunctionCard = ({
   stateMutability,
   setModalContent,
   contractType = "token",
+  abi, 
+  address
 }) => {
   const mutabilityClass = `title__state-mutability ${stateMutability}`;
   return (
@@ -21,11 +23,13 @@ const FunctionCard = ({
       </Card.Title>
       <Card.Body>
         <DynamicForm
-          data={inputs}
+          data={[...inputs]}
           method={title}
           contractType={contractType}
           stateMutability={stateMutability}
           setModalContent={setModalContent}
+          abi={abi}
+          address={address}
         />
       </Card.Body>
     </Card>

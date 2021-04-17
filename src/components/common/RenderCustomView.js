@@ -202,7 +202,6 @@ export const DynamicForm = (props) => {
       } else if (defaultValue !== "") {
         return defaultValue;
       }
-      return "";
     })
   );
 
