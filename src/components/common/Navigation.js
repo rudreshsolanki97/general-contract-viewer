@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
 
-const PageNavigation = ({ links, active }) => {
-  const [activePath, setactivePath] = useState(active);
-
+const PageNavigation = ({ setactivePath, activePath, links }) => {
   return (
     <div className="page-navigation">
       <Container>
@@ -12,13 +9,15 @@ const PageNavigation = ({ links, active }) => {
           <Col>
             <div className="page-navigation__wrapper">
               {links.map(({ name, link }) => (
-                <Link
-                  className={link === activePath ? "active" : ""}
+                <span
+                  className={
+                    link === activePath ? "nav-link__ active" : "nav-link__"
+                  }
                   to={link}
                   onClick={() => setactivePath(link)}
                 >
                   {name}
-                </Link>
+                </span>
               ))}
             </div>
           </Col>

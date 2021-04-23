@@ -114,8 +114,8 @@ export function GetCurrentProvider() {
   return "unknown";
 }
 
-export const GetNativeBalance = (address) => {
-  const web3 = new Web3(window.web3.currentProvider);
+export const GetNativeBalance = async (address) => {
+  const web3 = new Web3(await GetProvider());
   return web3.eth.getBalance(address);
 };
 
@@ -128,7 +128,7 @@ export async function SubmitContractTxGeneral(
   ...params
 ) {
   try {
-    const web3 = new Web3(window.web3.currentProvider);
+    const web3 = new Web3(await GetProvider());
 
     // const { address, abi } = getContractAddress(type);
 
@@ -155,6 +155,21 @@ export async function SubmitContractTxGeneral(
     throw e;
   }
 }
+
+export const GetPastEvents = async (abi, address) => {
+  const web3 = new Web3(await GetProvider());
+  const contract = new web3.eth.Contract(abi, address);
+  return await contract.getPastEvents(
+    "allEvents",
+    {
+      fromBlock: 0,
+      toBlock: "latest",
+    },
+    function (error, events) {
+      console.log("eventsevents",events);
+    }
+  );
+};
 
 export const IsJsonRpcError = (err) => {
   return err.message.split("\n")[0] === "Internal JSON-RPC error.";

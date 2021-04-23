@@ -6,7 +6,7 @@ import {
   GetJsonRpcError,
   IsJsonRpcError,
   SubmitContractTxGeneral,
-} from "../../wallets/metamask";
+} from "../../wallets";
 import { EXPLORER } from "../../helpers/constant";
 import { GeneralObjectViewer } from "./ObjectComponent";
 
@@ -244,7 +244,8 @@ export const DynamicForm = (props) => {
           )
             .then((resp) => {
               let respStr;
-              if (_.isObject(resp) === true) respStr = GeneralObjectViewer(resp);
+              if (_.isObject(resp) === true)
+                respStr = GeneralObjectViewer(resp);
               else respStr = `${resp}`;
 
               if (resp && resp.transactionHash) {

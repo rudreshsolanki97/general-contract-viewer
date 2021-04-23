@@ -13,7 +13,7 @@ import packageJson from "../package.json";
 import "./assets/scss/main.scss";
 import { initWeb3 } from "./wallets/metamask";
 
-import GenContractInteractor from "./components/GenContractInteractor";
+import GenContractInteractor from "./components/GCV";
 
 
 

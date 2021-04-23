@@ -16,11 +16,13 @@ export const NetworkValidation = (store) => (next) => (action) => {
     if (_.isUndefined(address)) store.dispatch(actions.WalletDisconnected());
     else {
       let { chain_id } = action.payload;
-      if (String(chain_id).startsWith("0x") && IsHex(chain_id))
-        chain_id = parseInt(chain_id, 16);
-      if (VALID_CHAINS.includes(chain_id))
-        store.dispatch(actions.NetworkValid());
-      else store.dispatch(actions.NetworkInValid());
+      if (!_.isUndefined(chain_id)) {
+        if (String(chain_id).startsWith("0x") && IsHex(chain_id))
+          chain_id = parseInt(chain_id, 16);
+        if (VALID_CHAINS.includes(chain_id))
+          store.dispatch(actions.NetworkValid());
+        else store.dispatch(actions.NetworkInValid());
+      }
     }
   }
   next(action);

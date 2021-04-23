@@ -12,7 +12,8 @@
     margin: 1rem;
     width: 70%;
 
-    a {
+    .nav-link__ {
+      cursor: pointer;
       text-decoration: none;
       text-transform: uppercase;
       padding: 5px;

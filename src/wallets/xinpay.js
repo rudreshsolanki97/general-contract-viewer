@@ -162,6 +162,15 @@ export const IsJsonRpcError = (err) => {
   return err.message.split("\n")[0] === "Internal JSON-RPC error.";
 };
 
+export const GetPastEvents = async (abi, address) => {
+  const xdc3 = new Xdc3(await GetProvider());
+  const contract = new xdc3.eth.Contract(abi, address);
+  return await contract.getPastEvents("allEvents", {
+    fromBlock: 0,
+    toBlock: "latest",
+  });
+};
+
 export const GetJsonRpcError = (err) => {
   return JSON.parse(err.message.split("\n").slice(1).join("").trim());
 };
