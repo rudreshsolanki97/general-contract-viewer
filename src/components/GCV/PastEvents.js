@@ -77,9 +77,9 @@ class PastEvents extends Component {
       );
     } else
       return (
-        <div style={{ color: "white", textAlign: "center" }}>
-          PLEASE CONNECT WALLET
-        </div>
+          <div style={{ color: "white", textAlign: "center" }}>
+            PLEASE CONNECT WALLET
+          </div>
       );
   }
 }

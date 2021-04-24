@@ -2,7 +2,7 @@ import TokenAbi from "../abi/Token.json";
 
 export const SubPath = "/";
 
-export const PROJECT_NAME = "General Contract Viewer";
+export const PROJECT_NAME = "GCV";
 
 export const RemoveExpo = (x) => {
   var data = String(x).split(/[eE]/);

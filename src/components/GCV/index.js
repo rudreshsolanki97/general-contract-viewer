@@ -84,6 +84,15 @@ class Dashboard extends Component {
       read: (x) => x === "view",
       write: (x) => x !== "view",
     };
+    if (type !== "read") {
+      if (!this.props.wallet.connected || !this.props.wallet.valid_network) {
+        return (
+          <div style={{ color: "white", textAlign: "center" }}>
+            PLEASE CONNECT WALLET
+          </div>
+        );
+      }
+    }
     return (
       <Container>
         <Row>

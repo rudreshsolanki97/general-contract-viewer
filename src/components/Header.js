@@ -9,6 +9,8 @@ import { PROJECT_NAME } from "../helpers/constant";
 import { initWeb3 } from "../wallets/metamask";
 import WalletConnect from "./wallet-connect/walletConnect";
 
+import GCVLogo from "../assets/img/brand/header-logo.png";
+
 class Header extends React.Component {
   renderCurrentAddressBox() {
     if (this.props.wallet.connected === false) return "Not Connected";
@@ -58,7 +60,7 @@ class Header extends React.Component {
     return (
       <Navbar className="custom-header" bg="light" expand="lg">
         <Link className="navbar-brand" to="/">
-          {PROJECT_NAME}
+          <img src={GCVLogo} />
         </Link>
 
         {this.getWalletBtn()}
