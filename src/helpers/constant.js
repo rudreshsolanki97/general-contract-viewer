@@ -24,7 +24,7 @@ export const RemoveExpo = (x) => {
 };
 
 export const CONTRACT_ADDRESS = {
-  token: "0x3270FeB4DA58eD8d95Bd8f04CBA5B24a1bb4925a",
+  token: "xdc8a000e77af0dc2c1ae42b8cf47ef78f4fd429e66",
   // matka: "0x7717FC488464efa40AaABB260D063d7783660C44",
 };
 
@@ -41,6 +41,8 @@ export const VALID_CHAINS = [97, 56, 50, 51];
 export const CHAIN_DATA = {
   97: "https://testnet.bscscan.com/",
   56: "https://bscscan.com/",
+  50: "https://explorer.xinfin.network",
+  51: "https://explorer.apothem.network",
 };
 
 export const HTTP_PROVIDER = {

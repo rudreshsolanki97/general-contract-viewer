@@ -1,4 +1,5 @@
 import * as types from "../../actions/types";
+import { CHAIN_DATA, IsHex } from "../../helpers/constant";
 
 const initialState = {
   connected: false,
@@ -14,11 +15,16 @@ const WalletReducer = (state = initialState, payload) => {
   switch (payload.type) {
     case types.WALLET_CONNECTED: {
       const { address, chain_id } = payload.payload;
+      let chainIdInt=chain_id;
+      if (IsHex(chain_id)) {
+        chainIdInt = parseInt(chain_id, 16);
+      }
       return {
         ...state,
         connected: true,
         address: address,
         chain_id: chain_id,
+        explorer:CHAIN_DATA[`${chainIdInt}`]
       };
     }
 

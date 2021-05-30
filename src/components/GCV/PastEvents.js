@@ -59,7 +59,14 @@ class PastEvents extends Component {
           .sort(({ blockNumber: a }, { blockNumber: b }) => b - a)
           .map((v, i) => (
             <Row className="event-row" key={i + 1}>
-              <Col lg={3}>{v.transactionHash}</Col>
+              <Col lg={3}>
+                <a
+                  target="_blank"
+                  href={`${this.props.wallet.explorer}/tx/${v.transactionHash}`}
+                >
+                  HASH
+                </a>
+              </Col>
               <Col lg={3}>{v.event}</Col>
               <Col lg={6}>{this.renderReturnValues(v.returnValues)}</Col>
             </Row>
@@ -77,9 +84,9 @@ class PastEvents extends Component {
       );
     } else
       return (
-          <div style={{ color: "white", textAlign: "center" }}>
-            PLEASE CONNECT WALLET
-          </div>
+        <div style={{ color: "white", textAlign: "center" }}>
+          PLEASE CONNECT WALLET
+        </div>
       );
   }
 }
