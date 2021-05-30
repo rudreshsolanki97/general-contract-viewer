@@ -10,7 +10,7 @@ import PageNavigation from "../common/Navigation";
 
 import PastEvents from "./PastEvents";
 
-import DEFAULT_ABI from "../../abi/Token.json";
+import DEFAULT_ABI from "../../abi/StorxToken.json";
 import { PROJECT_NAME, CONTRACT_ADDRESS, IsJson } from "../../helpers/constant";
 
 const DEFAULT_ADDRESS = CONTRACT_ADDRESS.token;
