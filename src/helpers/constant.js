@@ -1,4 +1,4 @@
-import TokenAbi from "../abi/Token.json";
+import TokenAbi from "../abi/StorxToken.json";
 
 export const SubPath = "/";
 
