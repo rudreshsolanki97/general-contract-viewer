@@ -1,5 +1,8 @@
 import TokenAbi from "../abi/StorxToken.json";
 
+import binance from "../assets/img/wallets/bnb.png";
+import xinfin from "../assets/img/wallets/xinpay.png";
+
 export const SubPath = "/";
 
 export const PROJECT_NAME = "GCV";
@@ -24,7 +27,7 @@ export const RemoveExpo = (x) => {
 };
 
 export const CONTRACT_ADDRESS = {
-  token: "xdc8a000e77af0dc2c1ae42b8cf47ef78f4fd429e66",
+  token: "xdc5d5f074837f5d4618b3916ba74de1bf9662a3fed",
   // matka: "0x7717FC488464efa40AaABB260D063d7783660C44",
 };
 
@@ -45,10 +48,22 @@ export const CHAIN_DATA = {
   51: "https://explorer.apothem.network",
 };
 
+export const RPC_TO_NETWORK = {
+  "https://data-seed-prebsc-1-s1.binance.org:8545/": 97,
+  "https://rpc.xinfin.network": 50,
+  "https://rpc.apothem.network": 51,
+};
+
 export const HTTP_PROVIDER = {
   97: "https://data-seed-prebsc-1-s1.binance.org:8545/",
   50: "https://rpc.xinfin.network",
   51: "https://rpc.apothem.network",
+};
+
+export const NETWORK_ICON = {
+  97: binance,
+  50: xinfin,
+  51: xinfin,
 };
 
 export const WS_PROVIDER = {};
@@ -118,3 +133,42 @@ export const IsJson = (abi) => {
   }
   return true;
 };
+
+export const BUILD_TX_LINK = (explorer, hash) => {
+  let retLink = `${explorer}`;
+
+  if (!retLink.endsWith("/")) retLink += "/";
+  retLink += `tx/${hash}`;
+  return retLink;
+};
+
+export const BUILD_BLOCK_LINK = (explorer, hash) => {
+  let retLink = `${explorer}`;
+
+  if (!retLink.endsWith("/")) retLink += "/";
+  retLink += `block/${hash}`;
+  return retLink;
+};
+
+export const DEFAULT_CHAIN_ID = 50;
+export const DEFAULT_PROVIDER = HTTP_PROVIDER[VALID_CHAINS[2]];
+
+export const EXPLORER = CHAIN_DATA[DEFAULT_CHAIN_ID];
+
+export const LOADERS = {
+  Xinpay: "xinpay",
+  Keystore: "keystore",
+  Privatekey: "privatekey",
+  MetaMask: "metamask",
+  DcentInApp: "dcent-inapp",
+  DcentBridge: "dcent-bridge",
+};
+
+export const NETWORK_NAME = {
+  50: "XinFin Mainnet",
+  51: "XinFin Apothem",
+  97: "BSC Testnet",
+  56: "BSC Mainnet",
+};
+
+export const MODE = process.env.REACT_APP_MODE || "";

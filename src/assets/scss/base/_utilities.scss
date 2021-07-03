@@ -161,3 +161,8 @@
 .lighten {
   color: $color-light-grey;
 }
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.3;
+}

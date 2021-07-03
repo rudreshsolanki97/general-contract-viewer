@@ -1,9 +1,11 @@
-import Xdc3 from "xdc3";
-import Web3 from "web3";
+import Xdc3, { utils } from "xdc3";
+
 import detectEthereumProvider from "@metamask/detect-provider";
 
 import * as actions from "../actions";
 import store from "../redux/store";
+import { LOADERS } from "../helpers/constant";
+import { GetRevertReason } from "../helpers/crypto";
 
 let addresses, xdc3;
 
@@ -63,7 +65,11 @@ export async function _initListerner() {
     const chain_id = await xdc3.eth.getChainId();
     addresses = accounts;
     return store.dispatch(
-      actions.WalletConnected({ address: accounts[0], chain_id })
+      actions.WalletConnected({
+        address: accounts[0],
+        chain_id,
+        loader: LOADERS.Xinpay,
+      })
     );
   });
 
@@ -130,7 +136,8 @@ export async function SubmitContractTxGeneral(
   ...params
 ) {
   try {
-    const xdc3 = new Xdc3(window.web3.currentProvider);
+    const state = store.getState();
+    const xdc3 = new Xdc3(await GetProvider());
 
     // const { address, abi } = getContractAddress(type);
 
@@ -142,10 +149,10 @@ export async function SubmitContractTxGeneral(
       return resp;
     } else {
       const gasLimit = await contract.methods[method](...params).estimateGas({
-        from: addresses[0],
+        from: state.wallet.address,
       });
       const resp = await contract.methods[method](...params).send({
-        from: addresses[0],
+        from: state.wallet.address,
         gas: gasLimit,
       });
 
@@ -174,3 +181,11 @@ export const GetPastEvents = async (abi, address) => {
 export const GetJsonRpcError = (err) => {
   return JSON.parse(err.message.split("\n").slice(1).join("").trim());
 };
+
+export function fromXdcAddress(address) {
+  return utils.fromXdcAddress(address);
+}
+
+export function toXdcAddress(address) {
+  return utils.toXdcAddress(address).toLowerCase();
+}

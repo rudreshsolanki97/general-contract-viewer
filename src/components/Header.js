@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Navbar, Button, Col } from "react-bootstrap";
 
 import BalanceModal from "./common/BalanceModal";
-import { PROJECT_NAME } from "../helpers/constant";
+import { MODE, PROJECT_NAME } from "../helpers/constant";
 import { initWeb3 } from "../wallets/metamask";
 import WalletConnect from "./wallet-connect/walletConnect";
 
@@ -35,6 +35,18 @@ class Header extends React.Component {
     );
   }
 
+  getMode() {
+    if (MODE === "offline")
+      return (
+        <div className="network-wrapper">
+          <div className="network">
+            <div className="network grey">OFFLINE</div>
+          </div>
+        </div>
+      );
+    return "";
+  }
+
   getWalletBtn() {
     let btnName = "CONNECT",
       disabled = false;
@@ -62,6 +74,8 @@ class Header extends React.Component {
         <Link className="navbar-brand" to="/">
           <img src={GCVLogo} />
         </Link>
+
+        {this.getMode()}
 
         {this.getWalletBtn()}
       </Navbar>

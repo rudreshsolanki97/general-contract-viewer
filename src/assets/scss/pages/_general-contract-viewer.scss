@@ -27,3 +27,29 @@
     }
   }
 }
+
+.network-wrapper {
+  .network {
+    cursor: pointer;
+    float: right;
+    color: white;
+    text-transform: uppercase;
+    padding: 0.5rem;
+  }
+
+  .grey {
+    @include network_box(darkgray);
+  }
+
+  .red {
+    @include network_box($color-new-red);
+  }
+
+  .green {
+    @include network_box($color-new-green);
+  }
+
+  .orange {
+    @include network_box($color-new-orange);
+  }
+}

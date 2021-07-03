@@ -1,21 +1,30 @@
 import * as types from "../../actions/types";
-import { CHAIN_DATA, IsHex } from "../../helpers/constant";
+import {
+  CHAIN_DATA,
+  IsHex,
+  DEFAULT_PROVIDER,
+  HTTP_PROVIDER,
+  DEFAULT_CHAIN_ID,
+} from "../../helpers/constant";
 
 const initialState = {
   connected: false,
   address: "",
-  chain_id: null,
+  chain_id: DEFAULT_CHAIN_ID,
   valid_network: false,
   explorer: "",
   rpc_provider: "",
   ws_provider: "",
+  loader: "",
+  account: null,
+  provider: DEFAULT_PROVIDER,
 };
 
 const WalletReducer = (state = initialState, payload) => {
   switch (payload.type) {
     case types.WALLET_CONNECTED: {
-      const { address, chain_id } = payload.payload;
-      let chainIdInt=chain_id;
+      const { address, chain_id, loader, ...rst } = payload.payload;
+      let chainIdInt = chain_id;
       if (IsHex(chain_id)) {
         chainIdInt = parseInt(chain_id, 16);
       }
@@ -24,7 +33,10 @@ const WalletReducer = (state = initialState, payload) => {
         connected: true,
         address: address,
         chain_id: chain_id,
-        explorer:CHAIN_DATA[`${chainIdInt}`]
+        explorer: CHAIN_DATA[`${chainIdInt}`],
+        loader,
+        provider: HTTP_PROVIDER[chainIdInt],
+        ...rst,
       };
     }
 
@@ -43,9 +55,16 @@ const WalletReducer = (state = initialState, payload) => {
     case types.WALLET_CHAIN_CHANGED: {
       const { chain_id } = payload.payload;
 
+      let chainIdInt = chain_id;
+      if (IsHex(chain_id)) {
+        chainIdInt = parseInt(chain_id, 16);
+      }
+
       return {
         ...state,
         chain_id: chain_id,
+        explorer: CHAIN_DATA[`${chainIdInt}`],
+        provider: HTTP_PROVIDER[chainIdInt],
       };
     }
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import copy from "copy-to-clipboard";
 import _ from "lodash";
 
 import {
@@ -7,8 +8,14 @@ import {
   IsJsonRpcError,
   SubmitContractTxGeneral,
 } from "../../wallets";
-import { EXPLORER } from "../../helpers/constant";
+import { EXPLORER, LOADERS, MODE } from "../../helpers/constant";
 import { GeneralObjectViewer } from "./ObjectComponent";
+import { GetSignedTx } from "../../wallets";
+import { RenderQR } from "./common";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+import store from "../../redux/store";
 
 const RenderInput = ({ field, ...inputProps }) => (
   <Row>
@@ -190,6 +197,138 @@ export const RenderInputCustomType2 = ({
   );
 };
 
+function RawTxForm({ cb, data, params }) {
+  const state = store.getState();
+
+  const [nonce, setnonce] = useState(0);
+  const [gasPrice, setgasPrice] = useState(9000);
+  const [gasLimit, setgasLimit] = useState(50000);
+  const [chainId, setchainId] = useState(state.wallet.chain_id);
+
+  if (![LOADERS.Privatekey, LOADERS.Keystore].includes(state.wallet.loader)) {
+    return "Only compatible with Private Key & Keystore connections";
+  }
+
+  return (
+    <Container>
+      <hr />
+      <br />
+
+      <Row>
+        <Col sm={12} lg={4} md={4}>
+          Chain ID
+        </Col>
+        <Col sm={12} lg={8} md={8}>
+          <input
+            type="number"
+            className="form-control"
+            value={chainId}
+            onChange={(e) => setchainId(e.target.value)}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col sm={12} lg={4} md={4}>
+          Nonce
+        </Col>
+        <Col sm={12} lg={8} md={8}>
+          <input
+            type="number"
+            className="form-control"
+            value={nonce}
+            onChange={(e) => setnonce(e.target.value)}
+          />
+        </Col>
+      </Row>
+
+      <Row>
+        <Col sm={12} lg={4} md={4}>
+          Gas Price
+        </Col>
+        <Col sm={12} lg={8} md={8}>
+          <input
+            type="number"
+            className="form-control"
+            value={gasPrice}
+            onChange={(e) => setgasPrice(e.target.value)}
+          />
+        </Col>
+      </Row>
+
+      <Row>
+        <Col sm={12} lg={4} md={4}>
+          Gas Limit
+        </Col>
+        <Col sm={12} lg={8} md={8}>
+          <input
+            type="number"
+            className="form-control"
+            value={gasLimit}
+            onChange={(e) => setgasLimit(e.target.value)}
+          />
+        </Col>
+      </Row>
+
+      <Row>
+        <Col className={"u-float-r"}>
+          <Button
+            onClick={async () => {
+              console.log("{ nonce, gasLimit, gasPrice, chainId }", {
+                nonce,
+                gasLimit,
+                gasPrice,
+                chainId,
+              });
+              const rawTx = await GetSignedTx(
+                data.abi,
+                data.address,
+                data.method,
+                { nonce, gasLimit, gasPrice, chainId },
+                ...params
+              );
+              cb(rawTx);
+            }}
+          >
+            Get QR
+          </Button>
+        </Col>
+      </Row>
+    </Container>
+  );
+}
+
+function RenderRawTx(x) {
+  return (
+    <Container>
+      <Row>
+        <Col className="u-text-center">
+          <h3>Signed TX HASH</h3>
+        </Col>
+      </Row>
+
+      <hr />
+
+      <Row>
+        <Col className="u-text-center qr-code-wrapper">{RenderQR(x, 200)}</Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <Button
+            className="u-float-r"
+            onClick={() => {
+              copy(x);
+              toast("copied", { autoClose: 1000 });
+            }}
+          >
+            <FontAwesomeIcon icon={faCopy} />
+          </Button>
+        </Col>
+      </Row>
+    </Container>
+  );
+}
+
 /**
  *
  * @param {*} props class properties
@@ -206,6 +345,7 @@ export const DynamicForm = (props) => {
   );
 
   const [loading, setLoading] = useState(false);
+  const [showRawTxForm, setshowRawTx] = useState(false);
   const [formData, setFormDatas] = useState(props.data);
 
   useEffect(() => {
@@ -231,6 +371,12 @@ export const DynamicForm = (props) => {
           {...rest}
         />
       ))}
+      {props.stateMutability !== "view" ? (
+        <Button onClick={() => setshowRawTx(!showRawTxForm)}>Sign</Button>
+      ) : (
+        ""
+      )}
+
       <Button
         onClick={() => {
           setLoading(true);
@@ -303,10 +449,27 @@ export const DynamicForm = (props) => {
         }}
         variant="primary"
         style={{ width: "10rem", float: "right" }}
-        disabled={loading}
+        disabled={loading || MODE === "offline"}
       >
         Submit
       </Button>
+
+      <Row>
+        <Col>
+          {showRawTxForm ? (
+            <RawTxForm
+              data={props}
+              params={inputs}
+              cb={(x) => {
+                console.log("rawTX", x);
+                props.setModalContent(RenderRawTx(x));
+              }}
+            />
+          ) : (
+            ""
+          )}
+        </Col>
+      </Row>
     </Container>
   );
 };

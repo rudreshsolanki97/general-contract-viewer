@@ -8,10 +8,14 @@ const PageNavigation = ({ setactivePath, activePath, links }) => {
         <Row>
           <Col>
             <div className="page-navigation__wrapper">
-              {links.map(({ name, link }) => (
+              {links.map(({ name, link, disabled = false }) => (
                 <span
                   className={
-                    link === activePath ? "nav-link__ active" : "nav-link__"
+                    disabled
+                      ? "disabled nav-link__"
+                      : link === activePath
+                      ? "nav-link__ active"
+                      : "nav-link__"
                   }
                   to={link}
                   onClick={() => setactivePath(link)}

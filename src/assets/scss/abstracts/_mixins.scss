@@ -1,7 +1,14 @@
 @mixin clearFix {
   &::after {
-    content:'';
-    clear:both;
-    display:table;
+    content: "";
+    clear: both;
+    display: table;
   }
+}
+
+@mixin network_box($color) {
+  background-color: lighten($color, 40%);
+  color: darken($color, 20%);
+  border: 2px solid $color;
+  border-radius: 5px;
 }

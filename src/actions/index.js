@@ -1,10 +1,11 @@
 import { CHAIN_DATA } from "../helpers/constant";
+import store from "../redux/store";
 import * as Types from "./types";
 
-export const WalletConnected = ({ address, chain_id }) => {
+export const WalletConnected = ({ address, chain_id, loader, ...rst }) => {
   return {
     type: Types.WALLET_CONNECTED,
-    payload: { address, chain_id },
+    payload: { address, chain_id, loader, ...rst },
   };
 };
 
@@ -15,9 +16,10 @@ export const WalletOpened = () => {
 };
 
 export const NetworkChanged = (chain_id) => {
+  const state = store.getState();
   return {
     type: Types.WALLET_CHAIN_CHANGED,
-    payload: { chain_id },
+    payload: { chain_id, address: state.wallet.address },
   };
 };
 

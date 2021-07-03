@@ -5,6 +5,7 @@ import {
   CONTRACT_ABI,
   CONTRACT_ADDRESS,
   AddMultiplier,
+  LOADERS,
 } from "../helpers/constant";
 
 import * as actions from "../actions";
@@ -39,7 +40,11 @@ export async function initWeb3() {
     addresses = accounts;
     const chain_id = await web3.eth.getChainId();
     return store.dispatch(
-      actions.WalletConnected({ address: accounts[0], chain_id })
+      actions.WalletConnected({
+        address: accounts[0],
+        chain_id,
+        loader: LOADERS.MetaMask,
+      })
     );
   } catch (e) {
     console.log(e);
@@ -128,7 +133,8 @@ export async function SubmitContractTxGeneral(
   ...params
 ) {
   try {
-    const web3 = new Web3(await GetProvider());
+    const provider = store.getState().wallet.provider;
+    const web3 = new Web3(provider);
 
     // const { address, abi } = getContractAddress(type);
 
@@ -166,7 +172,7 @@ export const GetPastEvents = async (abi, address) => {
       toBlock: "latest",
     },
     function (error, events) {
-      console.log("eventsevents",events);
+      console.log("eventsevents", events);
     }
   );
 };
@@ -185,3 +191,30 @@ function getContractAddress(type) {
     abi: CONTRACT_ABI[type],
   };
 }
+
+export const GetSignedTx = async (
+  abi,
+  address,
+  method,
+  { nonce, gasLimit, gasPrice, chainId },
+  ...params
+) => {
+  const state = store.getState();
+  const provider = state.wallet.provider;
+  const web3 = new Web3(new Web3.providers.HttpProvider(provider));
+  const contract = new web3.eth.Contract(abi, address);
+  const data = contract.methods[method](...params).encodeABI();
+  const tx = {
+    to: address,
+    nonce: nonce,
+    gasPrice: gasPrice,
+    gas: gasLimit,
+    data: data,
+    chainId,
+  };
+  const signed = await web3.eth.signTransaction(
+    tx,
+    state.wallet.address
+  );
+  return signed.raw;
+};
