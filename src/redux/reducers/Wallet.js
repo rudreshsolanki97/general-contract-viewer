@@ -35,7 +35,7 @@ const WalletReducer = (state = initialState, payload) => {
         chain_id: chain_id,
         explorer: CHAIN_DATA[`${chainIdInt}`],
         loader,
-        provider: HTTP_PROVIDER[chainIdInt],
+        provider: HTTP_PROVIDER[`${chainIdInt}`],
         ...rst,
       };
     }
@@ -64,7 +64,7 @@ const WalletReducer = (state = initialState, payload) => {
         ...state,
         chain_id: chain_id,
         explorer: CHAIN_DATA[`${chainIdInt}`],
-        provider: HTTP_PROVIDER[chainIdInt],
+        provider: HTTP_PROVIDER[`${chainIdInt}`],
       };
     }
 
