@@ -151,7 +151,7 @@ export const BUILD_BLOCK_LINK = (explorer, hash) => {
 };
 
 export const DEFAULT_CHAIN_ID = 50;
-export const DEFAULT_PROVIDER = HTTP_PROVIDER[VALID_CHAINS[2]];
+export const DEFAULT_PROVIDER = HTTP_PROVIDER[`${VALID_CHAINS[2]}`];
 
 export const EXPLORER = CHAIN_DATA[DEFAULT_CHAIN_ID];
 
