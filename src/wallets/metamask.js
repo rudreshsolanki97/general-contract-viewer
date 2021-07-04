@@ -133,7 +133,8 @@ export async function SubmitContractTxGeneral(
   ...params
 ) {
   try {
-    const provider = store.getState().wallet.provider;
+    const state = store.getState();
+    const provider = await GetProvider();
     const web3 = new Web3(provider);
 
     // const { address, abi } = getContractAddress(type);
@@ -141,9 +142,16 @@ export async function SubmitContractTxGeneral(
     const contract = new web3.eth.Contract(abi, address);
 
     if (stateMutability === "view") {
-      const resp = await contract.methods[method](...params).call();
+      if (state.wallet.connected === false) {
+        const web3 = new Web3(state.wallet.provider);
+        const contract = new web3.eth.Contract(abi, address);
+        const resp = await contract.methods[method](...params).call();
+        return resp;
+      } else {
+        const resp = await contract.methods[method](...params).call();
 
-      return resp;
+        return resp;
+      }
     } else {
       const gasLimit = await contract.methods[method](...params).estimateGas({
         from: addresses[0],

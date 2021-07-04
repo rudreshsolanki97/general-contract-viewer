@@ -137,16 +137,24 @@ export async function SubmitContractTxGeneral(
 ) {
   try {
     const state = store.getState();
-    const xdc3 = new Xdc3(await GetProvider());
+    const provider = await GetProvider();
+    const xdc3 = new Xdc3(provider);
 
     // const { address, abi } = getContractAddress(type);
 
     const contract = new xdc3.eth.Contract(abi, address);
 
     if (stateMutability === "view") {
-      const resp = await contract.methods[method](...params).call();
+      if (state.wallet.connected === false) {
+        const xdc3 = new Xdc3(state.wallet.provider);
+        const contract = new xdc3.eth.Contract(abi, address);
+        const resp = await contract.methods[method](...params).call();
+        return resp;
+      } else {
+        const resp = await contract.methods[method](...params).call();
 
-      return resp;
+        return resp;
+      }
     } else {
       const gasLimit = await contract.methods[method](...params).estimateGas({
         from: state.wallet.address,
@@ -188,4 +196,11 @@ export function fromXdcAddress(address) {
 
 export function toXdcAddress(address) {
   return utils.toXdcAddress(address).toLowerCase();
+}
+
+export async function IsConnected() {
+  const provider = await GetProvider();
+  const xdc3 = new Xdc3(await GetProvider());
+  const accounts = await xdc3.eth.getAccounts();
+  return accounts.length > 0;
 }
