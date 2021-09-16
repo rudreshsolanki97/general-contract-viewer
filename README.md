@@ -2,6 +2,8 @@
 
 Live At: https://gcv.xinfin.network/
 
+Broadcaster Link: https://broadcast.xinfin.network/build/raw-tx
+
 ## Setup
 
 ### Run Locally
